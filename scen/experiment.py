@@ -338,6 +338,10 @@ class ExperimentRunner:
             else:
                 self.world.wait_for_tick()
 
+            while not all(self.lidar_ready):
+                print("Not all lidars were ready")
+                time.sleep(self.timestep)
+
             if self.config.save_actors_bbox_in_lidar and  all(self.lidar_ready):
                 self.save_actors_bbox_in_lidar()
 
