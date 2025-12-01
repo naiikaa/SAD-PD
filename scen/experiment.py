@@ -374,7 +374,7 @@ if __name__ == '__main__':
         num_walkers=walker,
         town="Town15",
         spawn_point=spawn_point,
-        host="localhost", # set to "winhost" when using windows carla server
+        host="winhost", # set to "winhost" when using windows carla server
     )
     runner = ExperimentRunner(test_config)
     runner.run_once()

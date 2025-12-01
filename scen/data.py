@@ -362,17 +362,17 @@ if __name__ == '__main__':
     car_dir = Path(args.car_dir)
     db_dir = car_dir / "db/"
     topic_list = extract_pcl_topics(db_dir / "metadata.yaml")
-    extract_pcl_data(
-        str(db_dir / 'db_0.db3'),
-        topic_list,
-        str(db_dir / 'lidar_data.h5')
-    )
-    convert_pcl_to_ego(
-        str(db_dir / 'lidar_data.h5'),
-        str(db_dir / 'lidar_ego_data.h5'),
-        topic_list,
-        str(car_dir / 'eight_car_lidar.json')
-    )
+    # extract_pcl_data(
+    #     str(db_dir / 'db_0.db3'),
+    #     topic_list,
+    #     str(db_dir / 'lidar_data.h5')
+    # )
+    # convert_pcl_to_ego(
+    #     str(db_dir / 'lidar_data.h5'),
+    #     str(db_dir / 'lidar_ego_data.h5'),
+    #     topic_list,
+    #     str(car_dir / 'eight_car_lidar.json')
+    # )
 
     add_semantic_tag_to_recorded_bboxes(
         str(car_dir / 'bbox.h5'),
