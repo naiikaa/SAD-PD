@@ -374,9 +374,13 @@ if __name__ == '__main__':
         str(car_dir / 'eight_car_lidar.json')
     )
 
+    add_semantic_tag_to_recorded_bboxes(
+        str(car_dir / 'bbox.h5'),
+        str(car_dir / 'bbox_with_semantic_tag.h5')
+    )
     process_filter_static_bboxes(
         str(db_dir / 'lidar_ego_data.h5'),
-        str(car_dir / 'bbox.h5'),
+        str(car_dir / 'bbox_with_semantic_tag.h5'),
         str(car_dir / 'bbox_static.h5'),
         preselect_distance=100, 
         point_in_box_filtering=True,
