@@ -211,17 +211,17 @@ def extract_translated_bbox_data(bbox_fpath,converted_fpath, process_statics=Tru
             new_statics = []
             for actor in actors:
                 id, ax, ay, az, axt, ayt, azt, aroll, apitch, ayaw = actor
-                new_coords,new_rotation = coords_to_ego([ax,ay,az,aroll,apitch,ayaw],[ex,ey,ez,eroll,epitch,eyaw])
+                new_coords,new_rotation = coords_to_ego([ax,ay,az,aroll,apitch,ayaw],[ex,ey,ez,-eroll,-epitch,eyaw]) # remove roll and pitch from boxes to match stabilized point clouds
                 ax,ay,az = new_coords
                 aroll,apitch,ayaw = new_rotation
-                new_actors.append([id, ax, -ay, az, axt, ayt, azt, aroll, apitch, -ayaw])
+                new_actors.append([id, ax, -ay, az, axt, ayt, azt, aroll, apitch, ayaw])
             if process_statics:
                 for static in statics:
                     id, t, ax, ay, az, axt, ayt, azt, aroll, apitch, ayaw = static
-                    new_coords,new_rotation = coords_to_ego([ax,ay,az,aroll,apitch,ayaw],[ex,ey,ez,eroll,epitch,eyaw])
+                    new_coords,new_rotation = coords_to_ego([ax,ay,az,aroll,apitch,ayaw],[ex,ey,ez,-eroll,-epitch,eyaw])
                     ax,ay,az = new_coords
                     aroll,apitch,ayaw = new_rotation
-                    new_statics.append([id, t, ax, -ay, az, axt, ayt, azt, aroll, apitch, -ayaw])
+                    new_statics.append([id, t, ax, -ay, az, axt, ayt, azt, aroll, apitch, ayaw])
             
             frame_group = to.create_group(frame)
             frame_group.create_dataset("ego", data=ego)
@@ -280,6 +280,7 @@ def filter_static_bboxes(points, boxes, ego_box, preselect_distance=100, point_i
 
     preselected_boxes_tf = preselected_boxes[:, [2,3,4,8,9,10]] # xyz and rpy
     ego_box_tf = ego_box[[0,1,2,6,7,8]]
+    ego_box_tf[[3,4]] *= -1 #take out roll and pitch to match stabilization in point cloud data
     xyz, rot = coords_to_ego_vectorized(preselected_boxes_tf, ego_box_tf)
     preselected_boxes_in_ego = preselected_boxes.copy()
     preselected_boxes_in_ego[:, [2,3,4]] = xyz
