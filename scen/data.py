@@ -16,6 +16,9 @@ from cv_bridge import CvBridge
 from scipy.spatial import KDTree
 import argparse
 
+with open(Path(__file__).parent / "util" / "semantic_tag_map.json", 'r') as f:
+    type_id_semantic_tag_map = json.load(f)
+
 semantic_lidar_tags = {
   0 : "Unlabeled",
   1 : "Roads",
@@ -152,6 +155,28 @@ def extract_pcl_topics(metadata_fpath):
     topic_list = [topic["topic_metadata"]["name"] for topic in topic_metadata if topic["topic_metadata"]["type"] == "sensor_msgs/msg/PointCloud2"]
     return topic_list
 
+def add_semantic_tag_to_recorded_bboxes(old_fpath, new_fpath):
+    """Transforms bboxes.h5 that has actor_id_type_map into new_bboxes.h5 without, but added semantic tags to the second index in each actor bbox"""
+    with h5py.File(old_fpath, 'r') as source, h5py.File(new_fpath, 'w') as target:
+        frames = list(source.keys())[1:]
+        actor_id_type_map = json.loads(source['actor_id_type_map'][:][0])
+        for frame in tqdm(frames, desc="Adding semantic tag to actor bboxes... (frames)"):
+            target_frame_group = target.create_group(frame)
+            target_frame_group.create_dataset("ego", data=source[frame]["ego"][:])
+            if 'static' in target[frame]:
+                target_frame_group.create_dataset("static", data=source[frame]["statics"][:])
+
+            actor_boxes = []
+            for box in source[frame]['actors'][:]:
+                actor_type = actor_id_type_map[str(int(box[0]))]
+                semantic_tag = type_id_semantic_tag_map[actor_type]
+
+                new_box = box.copy()
+                new_box = np.insert(new_box, 1, float(semantic_tag))
+                actor_boxes.append(new_box)
+            actor_boxes = np.stack(actor_boxes)
+            target_frame_group.create_dataset("actors", data=actor_boxes)
+
 def convert_pcl_to_ego(lidar_data_fpath, converted_fpath, topics, sensor_config, frames=None):
     with open(sensor_config, "r") as f:
         car_config = json.load(f)
@@ -202,7 +227,7 @@ def convert_pcl_to_ego(lidar_data_fpath, converted_fpath, topics, sensor_config,
 def extract_translated_bbox_data(bbox_fpath,converted_fpath, process_statics=True):
     with h5py.File(bbox_fpath) as source, h5py.File(converted_fpath, "w") as to:
         frames = list(source.keys())
-        for frame in tqdm(frames[1:]):
+        for frame in tqdm(frames[:]):
             ego = list(source[frame]["ego"])
             ex, ey, ez, ext, eyt, ezt, eroll, epitch, eyaw = ego
             actors = list(source[frame]["actors"])
@@ -210,13 +235,13 @@ def extract_translated_bbox_data(bbox_fpath,converted_fpath, process_statics=Tru
             new_actors = []
             new_statics = []
             for actor in actors:
-                id, ax, ay, az, axt, ayt, azt, aroll, apitch, ayaw = actor
+                id, t, ax, ay, az, axt, ayt, azt, aroll, apitch, ayaw = actor
                 new_coords,new_rotation = coords_to_ego([ax,ay,az,aroll,apitch,ayaw],[ex,ey,ez,-eroll,-epitch,eyaw]) # remove roll and pitch from boxes to match stabilized point clouds
                 ax,ay,az = new_coords
                 aroll,apitch,ayaw = new_rotation
                 # add ezt since after coord-system transformation, the ego bbox center is now at 0
                 # instead of it being at ez - it got translated down by ezt.
-                new_actors.append([id, ax, -ay, az+ezt, axt, ayt, azt, aroll, apitch, ayaw])
+                new_actors.append([id, t, ax, -ay, az+ezt, axt, ayt, azt, aroll, apitch, ayaw])
             if process_statics:
                 for static in statics:
                     id, t, ax, ay, az, axt, ayt, azt, aroll, apitch, ayaw = static
