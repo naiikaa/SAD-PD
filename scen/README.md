@@ -35,9 +35,9 @@ Changing the parameters result in different experiments. The following list give
 - `num_walkers` - Number of pedestrians that are spawned (see `num_vehicles`)
 - `town` - Which town is the recording performed in (Town15 was our desired town for experiments and recordings)
 
-After recording a folder will be created under [data](../data/) named as the provided name, containing config files for the vehicle, metadata about the experiment and dependent on the toggles files containing bounding boxes and/or a db folder containing the sensor data.
+After recording a folder will be created under [data](../data/) named as the provided name, containing config files for the vehicle, metadata about the experiment and dependent on the toggles files containing bounding boxes for actors and static objects and/or a db folder containing the sensor data.
 
-## Transforming the sensor data into .h5
+## Transforming the sensor data into .h5 and translating the coordinates
 
 The data comes in usable `.db3` format but we decided we want to transform it into `.h5` so it's more usable for our object detection experiments. This is done automatically by running [data.py](./data.py). Just provide the right path to your `.db3` file and the rest will be taken care of.
 
@@ -45,12 +45,20 @@ The data comes in usable `.db3` format but we decided we want to transform it in
 88    db_dir = Path(<Your Path>)
 ```
 
+This script will also perform translations to the coordinates of the points cloud data as well as the two types of bounding boxes. Since this data is not recorded in respect to the ego vehicle but in respect to absolute world coordinates or specific sensors we need to perform a translation to guaranty consistency for later tasks like object detection etc.
+
+The script will produce the following four .h5 files
+- `lidar_data.h5`
+- `lidar_ego_data.h5`
+- `bbox_ego.h5`
+- `bbox_static_ego.h5`
+
 ## Structure of the resulting .h5 files
 
 The saved `.h5` files come with a specific structure that is described by the trees below
 ### Sensor data 
 ```
-lidar_data.hdf5
+lidar_data.h5/lidar_ego_data.h5
     |_sensors
     |    |_frames
     |        |_points (x, y, z, cos, objidx, objtag)
@@ -59,20 +67,18 @@ lidar_data.hdf5
 ```
 ### Bounding box data
 ```
-
-bbox.hdf5
+bbox_ego.h5
+    |_actor_id_type_map
+    |    |_(actor_id, actor_type) 
     |_frames
-    |    |_ego
-    |    |   |_(x,y,z, x_extent,y_extent,z_extent,roll,pitch 
-    |    |    yaw)
-    |    |_actors
-    |        |_(actor_id, x,y,z, x_extent,y_extent,z_extent,roll,pitch,yaw)
-    |        |_(actor_id, x,y,z, x_extent,y_extent,z_extent,roll,pitch,yaw)
-    |        |_(actor_id, x,y,z, x_extent,y_extent,z_extent,roll,pitch,yaw)
-    |_actor_types (todo)
-        |_(actor_id, actor_type)
-        |_(actor_id, actor_type)
-        |_(actor_id, actor_type)
+         |_ego
+         |   |_(x,y,z, x_extent,y_extent,z_extent,roll,pitch 
+         |    yaw)
+         |_actors
+             |_(actor_id, x,y,z, x_extent,y_extent,z_extent,roll,pitch,yaw)
+             |_(actor_id, x,y,z, x_extent,y_extent,z_extent,roll,pitch,yaw)
+             |_(actor_id, x,y,z, x_extent,y_extent,z_extent,roll,pitch,yaw)
+
 ```
 ## Data description
 
