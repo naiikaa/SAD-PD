@@ -330,7 +330,7 @@ def filter_static_bboxes(points, boxes, ego_box, preselect_distance=100, point_i
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--car_dir', type=str, default='/home/npopkov/repos/IR2025/data/20251128_1241_10v_150w_3sp')
+    parser.add_argument('--car_dir', type=str, default='/home/npopkov/repos/IR2025/data/20251202_1529_250v_150w_3sp')
     args = parser.parse_args()
 
     

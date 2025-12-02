@@ -210,7 +210,7 @@ def extract_pcl_topics(metadata_fpath):
 if __name__ == '__main__':
     
     
-    bbox_dir = Path('/home/npopkov/repos/IR2025/data/20251127_1754_30v_10w_265sp/')
+    bbox_dir = Path('/home/npopkov/repos/IR2025/data/20251202_1529_250v_150w_3sp')
     db_dir = bbox_dir / "db/"
     topic_list = extract_pcl_topics(db_dir / "metadata.yaml")
     

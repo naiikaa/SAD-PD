@@ -72,7 +72,7 @@ class ExperimentRunner:
             settings.synchronous_mode = True
         settings.fixed_delta_seconds = self.timestep
 
-        settings.no_rendering_mode = True
+        settings.no_rendering_mode = False
  
         self.world.apply_settings(settings)
         atexit.register(self.cleanup)
@@ -359,17 +359,20 @@ class ExperimentRunner:
 
 if __name__ == '__main__':
     #build name from current date+time in format YYYYMMDD_HHMMSS
-    spawn_point=220
+    spawn_point=3
     vehicles = 250
     walker = 150
+    
     print(f"Running experiment with {vehicles} vehicles, {walker} walkers, spawn point {spawn_point}")
     postfix = f"{vehicles}v_{walker}w_{spawn_point}sp"
+
     name = datetime.now().strftime("%Y%m%d_%H%M") + "_" + postfix
+    
     test_config = ExperimentConfig(name, 
         bridge_passive_mode=True,
         record=True,
         record_bboxes=True,
-        duration_in_s=50,
+        duration_in_s=10,
         num_vehicles=vehicles,
         num_walkers=walker,
         town="Town15",
