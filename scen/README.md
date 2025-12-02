@@ -57,7 +57,7 @@ The script will produce the following five .h5 files
 The finished pre-processed data is contained in `bbox_ego.h5` and `lidar_ego_data.h5`.
 
 ## The ego vehicle reference frame
-The ego vehicle reference frame follows the left hand system convention - the positive directions of x, y and z point towards forward, up and right, respectively. Additionally, the ego vehicle reference frame is "stabilized", meaning the data do not incorporate pitch and roll from the ego vehicle. As an example, if the car would drive uphill, point clouds and bounding boxes do not reflect that. Rotation around the z axis is represented in the point clouds and bounding boxes.
+The ego vehicle reference frame follows the left hand system convention - the positive directions of x, y and z point towards forward, up and right, respectively. Additionally, the ego vehicle reference frame is "stabilized", meaning the data do not incorporate pitch and roll from the ego vehicle. As an example, if the car would drive uphill, point clouds and bounding boxes do not reflect that, because the car rotation did not change relative to the world. However, if the car's pitch or roll does change relative to the world, it would be reflected in the point cloud data.
 
 ## Structure of the resulting .h5 files
 
