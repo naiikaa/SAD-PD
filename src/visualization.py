@@ -125,7 +125,7 @@ def create_pcl_video(pcl_points, output_file,bbox_file, topics, frames=None):
 
                 #plot bounding boxes no rotation needed
                 for box in boxes:
-                    id, bx, by, bz, bxextend, byextend, bzextend, broll, bpitch, byaw = box
+                    id, t, bx, by, bz, bxextend, byextend, bzextend, broll, bpitch, byaw = box
                     plot_box(ax, bx, by, bz, bxextend, byextend, bzextend, broll, bpitch, byaw)
                 for box in static_boxes:
                     id, t, bx, by, bz, bxextend, byextend, bzextend, broll, bpitch, byaw = box
