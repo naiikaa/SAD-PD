@@ -22,3 +22,7 @@ The materials provided here summarize essential setup procedures, system interac
 ### Purpose
 These documents collectively provide the foundation for building a **CARLA–ROS 2 bridge** and generating reproducible multi-sensor autonomous-driving datasets within the Intelligent Embedded Systems group.
 *The whole workflow based on official documents which are mentioned before.
+
+## Package Demo
+A short video that shows you how to generate one batch of synthetic point cloud data, post-process that data and visualize it.
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/viNa4aCaWtE/0.jpg)](https://www.youtube.com/watch?v=viNa4aCaWtE)
