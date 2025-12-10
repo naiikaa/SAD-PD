@@ -6,6 +6,14 @@ We introduce a pipeline that include three parts:
 - Post-processing that includes coordinate translation from world and sensor points of view into the ego perspective
 - 3D Vizualization of your point-cloud data
 
+## Requierments
+This repo uses [ros2bridge](https://github.com/ttgamage/carla-ros-bridge) for CARLA which comes with the following requirements
+```
+– Operating system: Ubuntu 22.04 LTS (native or via WSL 2),
+– CARLA simulator: version 0.9.15,
+– ScenarioRunner: version 0.9.15,
+– ROS 2 distribution: Humble.
+```
 ## Package Demo
 A short video that shows you how to generate one batch of synthetic point cloud data, post-process that data and visualize it.
 
