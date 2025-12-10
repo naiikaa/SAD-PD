@@ -8,4 +8,5 @@ We introduce a pipeline that include three parts:
 
 ## Package Demo
 A short video that shows you how to generate one batch of synthetic point cloud data, post-process that data and visualize it.
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/viNa4aCaWtE/0.jpg)](https://www.youtube.com/watch?v=viNa4aCaWtE)
